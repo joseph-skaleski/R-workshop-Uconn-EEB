@@ -147,3 +147,130 @@ afghanistan <- gap[1:12, 1:6]
 afghanistan$gdp <- gap[1:12, 3]*gap[1:12, 6]
 #alternate      afghan$pop*afghan$gdpPercap  
 write.csv(x=afghanistan, file = "results/afghanistan_subset.csv")
+
+# day 2 conditional statements, functions, ggplot
+
+#Conditional statements
+
+number <- 37
+if (number > 100){    #if condition is true
+  print("greater than 100")  #perform this function
+  }else{                     #if condition is false
+    print("less than 100")}   #perform alternate function
+print("finished checking")
+
+#comparison operators
+#greater than >
+#less than <
+#equal to ==, single =is assignment operator (<-)
+# not equal to !=
+#greater than or equal >=
+# less than <=
+
+number <- 150
+if (number > 100){    
+  print("greater than 100")}
+
+# more than one test
+
+number <- -3
+if (number > 0){
+  print(1)
+  }else if(number < 0)
+  {print(0)}
+
+
+
+#combine tests
+number1 <- -15
+number2 <- -40
+
+if(number1 >= 0 & number2 >=0){
+  print("both numbers are positive")
+} else{print("at least one number is positive")
+}
+
+# or
+
+if(number1 >= 0 | number2 >=0){
+  print("at least one number is positive")
+} else{print("at least one number is negative")
+}
+
+number =52
+if (number >= 45 & number <= 50) {
+  print("Between 45 and 50")}
+
+# creating/using functions
+
+fahr_to_kelvin <- function(temp){
+  kelvin <- ((temp-32) *(5/9))+273.15
+             return(kelvin) 
+}
+
+fahr_to_kelvin(32) #freezing point
+fahr_to_kelvin(212)
+
+kelvin_to_celcius <- function(temp){
+  celcius <- temp - 273.15
+  return(celcius)} 
+
+kelvin_to_celcius(0)
+
+#variable scope
+#mixing and matching
+
+fahr_to_celcius <- function(temp){
+  temp_k <- fahr_to_kelvin(temp)
+  temp_c <- kelvin_to_celcius(temp_k)
+  return(temp_c)
+}
+
+
+#missing notes here
+
+
+celcius_to_fahr <- function(temp){
+  fahr <- ((temp*9/5) +32)
+  return(fahr)
+}
+
+celcius_to_fahr(0)
+celcius_to_fahr(100)
+
+#making reproducible graphics
+
+library(ggplot2)
+#read in some data
+gap<- read.csv("data/gapminder-FiveYearData.csv")
+head(gap)
+str(gap)
+plot(x = gap$gdpPercap, y = gap$lifeExp)
+#ggpolt image
+#aes is graph aesthetics-which columns to focus on( already listed variables)
+ggplot(data = gap, aes(x = gdpPercap, y = lifeExp)) + geom_point()
+#geompoint-geometric point, describe what type of graph layering
+ggplot(data = gap, aes(x = year, y = lifeExp)) + geom_point()
+head(gap)
+ggplot(data = gap, aes(x = year, y = lifeExp, by = country))+
+  geom_line(aes(color = continent)) + geom_point(color = "blue")
+
+ggplot(data = gap, aes(x = gdpPercap, y = lifeExp,))+
+  scale_x_log10() +
+  geom_point(alpha = 0.5) +
+  geom_smooth(method = "lm") +
+theme_bw()+
+  ggtitle("Effects of per-capita gdp on life expectancy")+
+  xlab("GDP per capita ($)")+
+  ylab("Life Expectency (Years)")
+
+ggsave(file = "results/life_expectancy.pdf")
+#save-use export button or function in code
+
+#faceting
+
+ggplot(data = gap, aes(x = gdpPercap, y = lifeExp, color = continent))+
+  geom_point()+
+  scale_x_log10()+
+  geom_smooth(method = "lm")+
+  facet_wrap(~year)
